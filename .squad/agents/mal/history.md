@@ -40,3 +40,7 @@
 5. **Test Strategy** — Skipped test files with explicit bug IDs (`[Fact(Skip = "BUG-001...")]` / `describe.skip`) so Challenge 05 participants un-skip them.
 
 6. **Work parallelization** — 25 work items; items 2-4 can run in parallel after scaffold; frontend/backend work largely parallelizable after API contracts defined.
+
+### 2026-04-20: Items 24–25 Complete — Build Finalized
+
+Completed final polish: rewrote README.md (149 lines), planted 3 formatting inconsistencies (README trailing whitespace + TestBase.cs K&R braces), created `docs/bug-reproduction.md` coach reference, verified all builds/tests green. 25/25 items done. RecipeHub ready for hackathon.
