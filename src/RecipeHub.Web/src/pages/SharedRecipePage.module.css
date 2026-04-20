@@ -1,0 +1,82 @@
+.page {
+  min-height: 100vh;
+}
+
+.topBar {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #222;
+  text-decoration: none;
+}
+
+.main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.description {
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.steps {
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+.step {
+  margin-bottom: 0.5rem;
+}
+
+.timer {
+  color: #666;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.notFound,
+.error {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.error {
+  color: #a33;
+}
+
+.notFound h1 {
+  margin-top: 0;
+}

@@ -3,3 +3,5 @@ export { RecipeListPage } from './RecipeListPage';
 export { RecipeDetailPage } from './RecipeDetailPage';
 export { RecipeEditPage } from './RecipeEditPage';
 export { FavoritesPage } from './FavoritesPage';
+export { CookModePage } from './CookModePage';
+export { SharedRecipePage } from './SharedRecipePage';

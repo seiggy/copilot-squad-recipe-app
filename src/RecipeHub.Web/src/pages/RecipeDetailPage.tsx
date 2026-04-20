@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Badge, Button, Spinner } from '../components/ui';
+import { ShareButton } from '../components/recipe';
 import { useDeleteRecipe, useRecipe } from '../hooks';
 import styles from './RecipeDetailPage.module.css';
 
@@ -77,6 +78,7 @@ export function RecipeDetailPage() {
         <Link to={`/recipes/${numericId}/cook`}>
           <Button variant="secondary">Cook Mode</Button>
         </Link>
+        <ShareButton recipeId={numericId} />
         <Button
           variant="danger"
           onClick={handleDelete}

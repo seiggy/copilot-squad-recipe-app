@@ -1,7 +1,9 @@
 import type {
+  CookModeDto,
   CreateRecipeRequest,
   Recipe,
   RecipeDetail,
+  ShareDto,
   Tag,
   UpdateRecipeRequest,
 } from './types';
@@ -100,6 +102,24 @@ export const apiClient = {
     request<void>(`/api/recipes/${id}`, { method: 'DELETE', parseJson: false }),
 
   listTags: (): Promise<Tag[]> => request<Tag[]>('/api/tags'),
+
+  getCookStep: (recipeId: number, stepNumber: number): Promise<CookModeDto> =>
+    request<CookModeDto>(`/api/recipes/${recipeId}/cook/steps/${stepNumber}`),
+
+  searchRecipes: (q: string, tag?: string): Promise<Recipe[]> => {
+    const params = new URLSearchParams();
+    params.set('q', q);
+    if (tag && tag.length > 0) {
+      params.set('tag', tag);
+    }
+    return request<Recipe[]>(`/api/recipes/search?${params.toString()}`);
+  },
+
+  shareRecipe: (recipeId: number): Promise<ShareDto> =>
+    request<ShareDto>(`/api/recipes/${recipeId}/share`, { method: 'POST' }),
+
+  getSharedRecipe: (token: string): Promise<RecipeDetail> =>
+    request<RecipeDetail>(`/api/shared/${encodeURIComponent(token)}`),
 };
 
 export type ApiClient = typeof apiClient;

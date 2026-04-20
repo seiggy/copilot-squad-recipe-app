@@ -1,0 +1,16 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.feedback {
+  color: #2a7a3e;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #a33;
+  font-size: 0.9rem;
+}

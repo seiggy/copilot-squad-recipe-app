@@ -1,17 +1,30 @@
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import {
+  CookModePage,
   FavoritesPage,
   HomePage,
   RecipeDetailPage,
   RecipeEditPage,
   RecipeListPage,
+  SharedRecipePage,
 } from './pages';
 import styles from './App.module.css';
 import './App.css';
 
 function App() {
+  const location = useLocation();
+  const hideChrome = location.pathname.startsWith('/shared/');
+
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? styles.active : undefined;
+
+  if (hideChrome) {
+    return (
+      <Routes>
+        <Route path="/shared/:token" element={<SharedRecipePage />} />
+      </Routes>
+    );
+  }
 
   return (
     <div className={styles.app}>
@@ -36,6 +49,7 @@ function App() {
           <Route path="/recipes/new" element={<RecipeEditPage />} />
           <Route path="/recipes/:id" element={<RecipeDetailPage />} />
           <Route path="/recipes/:id/edit" element={<RecipeEditPage />} />
+          <Route path="/recipes/:id/cook" element={<CookModePage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
         </Routes>
       </main>

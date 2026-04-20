@@ -46,3 +46,16 @@ export interface Tag {
   name: string;
   recipeCount: number;
 }
+
+export interface CookModeDto {
+  recipeId: number;
+  totalSteps: number;
+  stepNumber: number;
+  instruction: string;
+  timerMinutes: number | null;
+}
+
+export interface ShareDto {
+  token: string;
+  url: string;
+}

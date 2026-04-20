@@ -1,0 +1,28 @@
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.chip {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.chip:focus-visible {
+  outline: 2px solid #4a7fbf;
+  outline-offset: 2px;
+}
+
+.active {
+  transform: scale(1.02);
+}
+
+.error {
+  color: #a33;
+  font-size: 0.9rem;
+}
