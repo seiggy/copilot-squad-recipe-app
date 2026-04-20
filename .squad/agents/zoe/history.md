@@ -31,3 +31,4 @@
 **Case sensitivity in SQLite:** `string.Contains()` → `instr()` (case-sensitive). `EF.Functions.Like()` → `LIKE` (case-insensitive for ASCII). Critical for search bug diagnosis.
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+- 2026-04-20 — Item 20: scaffolded 	ests/RecipeHub.Api.Tests/ (xunit.v3 1.0.1, Test SDK 17.12.0, Mvc.Testing + EF.Sqlite 10.0.0), added to sln, placeholder skipped test green. Build 0/0, test 0 failed / 1 skipped.

@@ -65,3 +65,7 @@ Shipped Button / Card / Spinner / Badge in `src/components/ui/` with co-located 
 ### 2026-04-20 — Item 8: Typed API client module
 
 Shipped `src/api/{types,client,index}.ts` in `src/RecipeHub.Web`. Native fetch, zero new deps. camelCase types (server uses System.Text.Json defaults — confirmed no naming policy in Program.cs). `apiClient` covers the 6 existing endpoints (list/get/create/update/delete recipes + list tags); search/cook-mode/share/favorites deferred to their owning items. `ApiError` class surfaces `{status, message, body}`, pulling `title` off ProblemDetails. 204 returns `undefined`. `credentials: 'include'` matches dev CORS. `VITE_API_BASE_URL` required in prod, dev falls back to http://localhost:5000 with a warn. `npm run build` + `npm run lint` both clean.
+
+### 2026-04-20 — Items 10+11+19: Pages, Routing, Query wiring
+
+Shipped 5 pages (Home/List/Detail/Edit/Favorites) + 6 TanStack Query hooks + react-router-dom v7.14.1 wiring. Dual-mode Edit page (create via /recipes/new, edit via /recipes/:id/edit) with native useState form, dynamic step reorder, tag checkbox multi-select. Trivial title filter on list page marked TODO for Item 15's SearchBar. Cook Mode button links to /recipes/:id/cook (route owned by Item 13). No apiClient changes — Item 8's 6 endpoints cover full CRUD. CSS Modules throughout. `npm run build` (118 modules, 1.06s) + `npm run lint` both clean.
