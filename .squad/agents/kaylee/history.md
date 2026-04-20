@@ -103,3 +103,9 @@ dotnet build RecipeHub.sln    # succeeded: 0 warnings, 0 errors, ~4.5s
 **Program.cs delta:** single `AddDbContext<RecipeDbContext>` registration reading `ConnectionStrings:RecipeDb` from config (`Data Source=recipes.db` default). No `Database.Migrate()`, no `EnsureCreated()`, no seed — Item 5 owns seeding.
 
 **Build:** `dotnet build RecipeHub.sln` — 0 warnings, 0 errors, ~1.6s.
+
+### 2026-04-20 — Items 6 + 7 Recipe CRUD + Tag endpoints (Kaylee)
+
+Shipped `RecipeEndpoints.cs` (GET list/detail, POST, PUT, DELETE) and `TagEndpoints.cs` (GET list with RecipeCount) plus six record DTOs under `Dtos/`. Tag-on-create uses match-only by Name (no auto-create) per SRD §5.2. Program.cs delta: one `using` + `app.MapRecipeEndpoints(); app.MapTagEndpoints();` after `MapDefaultEndpoints` — leaves room for Item 5's migrate+seed block. Used `TimerMinutes` on RecipeStepDto (not DurationSeconds) to match the model; omitted `Ingredients` (no such entity). Build: 0/0.
+
+- 2026-04-20 — Item 5: Seed data (SeedData.EnsureSeeded) — 10 tags, 12 recipes, 71 steps, 26 recipe-tag joins; idempotent via db.Recipes.Any(); migrate+seed wired in Program.cs scope block. Build: 0W/0E.

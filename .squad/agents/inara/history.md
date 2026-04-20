@@ -57,3 +57,7 @@
 - `npm run build` → vite 6.0.7, 77 modules transformed, ✓ built in 661ms.
 - `npm run lint` → clean, no warnings.
 
+
+### 2026-04-20 — Item 9: Base UI components
+
+Shipped Button / Card / Spinner / Badge in `src/components/ui/` with co-located CSS Modules + `index.ts` barrel. Button: 4 variants × 3 sizes + `loading`; Card: clickable variant is a proper `role=button` with keyboard handler; Spinner: `role=status` + sr-only label; Badge: 4 semantic variants. No new deps, vanilla CSS only. `npm run build` and `npm run lint` both clean. `App.tsx` untouched — wiring is a later item.
