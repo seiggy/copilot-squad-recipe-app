@@ -49,12 +49,9 @@ public sealed class RecipeApiFactory : WebApplicationFactory<Program>
         }
     }
 
-    private void TryDeleteDb()
-    {
-        try
-        {
-            if (File.Exists(_dbPath))
-            {
+    private void TryDeleteDb() {
+        try {
+            if (File.Exists(_dbPath)) {
                 File.Delete(_dbPath);
             }
         }
