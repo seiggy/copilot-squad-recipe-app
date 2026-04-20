@@ -1,0 +1,33 @@
+{
+  "name": "RecipeHub (.NET 10 + React 19)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "postCreateCommand": "dotnet --version && dotnet restore RecipeHub.sln && cd src/RecipeHub.Web && npm install",
+  "forwardPorts": [5000, 5001, 17050],
+  "portsAttributes": {
+    "5000": { "label": "RecipeHub API (HTTP)" },
+    "5001": { "label": "RecipeHub API (HTTPS)" },
+    "17050": { "label": "Aspire Dashboard" }
+  },
+  "remoteUser": "vscode"
+}
