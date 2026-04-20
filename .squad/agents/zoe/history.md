@@ -32,3 +32,4 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 - 2026-04-20 — Item 20: scaffolded 	ests/RecipeHub.Api.Tests/ (xunit.v3 1.0.1, Test SDK 17.12.0, Mvc.Testing + EF.Sqlite 10.0.0), added to sln, placeholder skipped test green. Build 0/0, test 0 failed / 1 skipped.
+- 2026-04-20 — Item 21: Vitest 4.1.4 + @vitest/ui + RTL 16.3.2 + jest-dom 6.9.1 + user-event 14.6.1 + jsdom 29.0.2 scaffolded in src/RecipeHub.Web. Merged test block into vite.config.ts; setup.ts + placeholder.test.ts under src/test/; scripts test/test:watch/test:ui; tsconfig.app.json types added. Build + lint clean, `npm run test` → 1 skipped / 0 failed.
