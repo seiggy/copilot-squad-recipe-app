@@ -61,3 +61,7 @@
 ### 2026-04-20 — Item 9: Base UI components
 
 Shipped Button / Card / Spinner / Badge in `src/components/ui/` with co-located CSS Modules + `index.ts` barrel. Button: 4 variants × 3 sizes + `loading`; Card: clickable variant is a proper `role=button` with keyboard handler; Spinner: `role=status` + sr-only label; Badge: 4 semantic variants. No new deps, vanilla CSS only. `npm run build` and `npm run lint` both clean. `App.tsx` untouched — wiring is a later item.
+
+### 2026-04-20 — Item 8: Typed API client module
+
+Shipped `src/api/{types,client,index}.ts` in `src/RecipeHub.Web`. Native fetch, zero new deps. camelCase types (server uses System.Text.Json defaults — confirmed no naming policy in Program.cs). `apiClient` covers the 6 existing endpoints (list/get/create/update/delete recipes + list tags); search/cook-mode/share/favorites deferred to their owning items. `ApiError` class surfaces `{status, message, body}`, pulling `title` off ProblemDetails. 204 returns `undefined`. `credentials: 'include'` matches dev CORS. `VITE_API_BASE_URL` required in prod, dev falls back to http://localhost:5000 with a warn. `npm run build` + `npm run lint` both clean.
