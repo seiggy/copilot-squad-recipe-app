@@ -41,6 +41,10 @@ app.MapDefaultEndpoints();
 
 app.MapRecipeEndpoints();
 app.MapTagEndpoints();
+app.MapCookModeEndpoints();
+app.MapSearchEndpoints();
+app.MapShareEndpoints();
+app.MapFavoriteEndpoints();
 
 app.MapGet("/", () => "RecipeHub API");
 
