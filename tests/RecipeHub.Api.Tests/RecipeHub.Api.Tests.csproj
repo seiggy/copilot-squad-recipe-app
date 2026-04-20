@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <!-- xUnit1051: tests here are Skip-ed planted-bug demos; propagating a
+         CancellationToken through every call is noise for teaching code. -->
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

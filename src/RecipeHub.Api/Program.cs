@@ -49,3 +49,9 @@ app.MapFavoriteEndpoints();
 app.MapGet("/", () => "RecipeHub API");
 
 app.Run();
+
+// Exposed so WebApplicationFactory<Program> in RecipeHub.Api.Tests can locate
+// the entry-point assembly. Minimal APIs use top-level statements, which emit
+// an internal Program class — this partial makes it public without touching
+// any other wiring.
+public partial class Program;
