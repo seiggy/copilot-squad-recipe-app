@@ -19,3 +19,24 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+
+### 2026-04-20: Aspire 13.2 Build Plan Created
+
+**Plan file:** `.squad/plans/recipehub-build-plan.md`
+
+**Key architectural decisions:**
+
+1. **Aspire JavaScript Integration** — Use `Aspire.Hosting.JavaScript` (13.2.2) with `AddViteApp()` for React frontend. Critical: do NOT call `.WithHttpEndpoint()` on Vite resources; `AddViteApp` auto-registers one. Duplicate endpoint calls cause runtime errors.
+
+2. **API URL Discovery** — Vite only exposes `VITE_`-prefixed env vars to client code. Pass API URL via `WithEnvironment("VITE_API_BASE_URL", api.GetEndpoint("http"))`. Frontend reads `import.meta.env.VITE_API_BASE_URL`.
+
+3. **SQLite: No Aspire Resource Needed** — The Community Toolkit `CommunityToolkit.Aspire.Hosting.Sqlite` exists but adds orchestration complexity for a file-based DB. Simpler to configure connection string in `appsettings.json` directly. Zero benefit for local-only hackathon app.
+
+4. **Planted Bug Locations (DO NOT FIX):**
+   - BUG-001: `CookModeEndpoints.cs` (stepNumber - 1) + `useCookMode.ts` (useState(1))
+   - BUG-002: `SearchEndpoints.cs` (string.Contains is case-sensitive in SQLite)
+   - BUG-003: `ShareEndpoints.cs` (Token assigned after SaveChangesAsync)
+
+5. **Test Strategy** — Skipped test files with explicit bug IDs (`[Fact(Skip = "BUG-001...")]` / `describe.skip`) so Challenge 05 participants un-skip them.
+
+6. **Work parallelization** — 25 work items; items 2-4 can run in parallel after scaffold; frontend/backend work largely parallelizable after API contracts defined.

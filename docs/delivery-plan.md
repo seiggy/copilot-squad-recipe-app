@@ -1,0 +1,285 @@
+# RecipeHub Starter App - Delivery Plan
+
+## 1. Delivery Overview
+
+This plan covers building the RecipeHub starter application from the Software Requirements Document (SRD) to a ready-to-use hackathon repository. RecipeHub is a local-only .NET 10 + React 19 + SQLite recipe browsing app that serves as the target codebase for Copilot Squad hackathon challenges.
+
+The app ships with three intentionally planted bugs that participants discover and fix during Challenge 05. The delivery must produce a repo that looks and feels like a real (if incomplete) project - not a contrived exercise.
+
+**Total estimated effort:** 10.5 person-days across 4 phases.
+
+**Technology stack:**
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Backend | .NET (Minimal API) | 10 Preview |
+| ORM | Entity Framework Core | 10 Preview |
+| Database | SQLite | 3.x (via EF Core provider) |
+| Frontend | React + TypeScript | 19.x |
+| Build tooling | Vite | 6.x |
+| Routing | React Router | v7 |
+| Data fetching | TanStack Query | v5 |
+| Dev environment | GitHub Codespaces | Dev container spec |
+
+---
+
+## 2. Team Structure
+
+| Role | Count | Responsibilities |
+|------|-------|-----------------|
+| Full-stack Developer | 1 | Build API and frontend, wire integrations, plant bugs |
+| Technical Reviewer | 1 | Review code, verify bugs behave correctly, test Codespace setup |
+| Hackathon Content Author | 1 | Write and update challenge files, coach guide, README |
+
+This can be done by 1-2 people with overlapping roles. The reviewer role is critical for bug verification - the person planting bugs should not be the only person confirming they work as intended.
+
+---
+
+## 3. Phase 1 - Foundation (Days 1-2)
+
+**Goal:** Working .NET API with recipe CRUD and SQLite database.
+
+### Deliverables
+
+| Deliverable | Details |
+|-------------|---------|
+| Project scaffolding | `dotnet new web` for API, `npm create vite` for client (client is empty shell until Phase 2) |
+| EF Core DbContext | Models: `Recipe`, `RecipeStep`, `Tag`, `RecipeTag`, `ShareToken`, `Favorite` |
+| Database migrations | Initial migration covering all six tables with correct relationships |
+| Seed data | 12 recipes, 10 tags, ~70 recipe steps spread across all recipes |
+| Recipe CRUD endpoints | `GET /api/recipes` (list with pagination), `GET /api/recipes/{id}` (detail with steps and tags), `POST /api/recipes`, `PUT /api/recipes/{id}`, `DELETE /api/recipes/{id}` |
+| Tag endpoints | `GET /api/tags`, `GET /api/tags/{id}/recipes` |
+| Configuration | `appsettings.json` with SQLite connection string, CORS policy for `localhost:5173`, global error handling middleware |
+| global.json | Pin .NET 10 SDK preview version to avoid build drift |
+
+### Key decisions
+
+- Use Minimal API pattern (not controllers) to keep the codebase small and readable for hackathon participants.
+- SQLite database file stored at `./recipes.db` in the project root. EF Core recreates and seeds on startup if the file is missing.
+- Seed data should include a mix of cuisines and difficulty levels so filtering demos look realistic.
+
+### Exit criteria
+
+- `dotnet run` starts the API on `https://localhost:5062` without errors.
+- Seed data loads automatically on first run.
+- All CRUD endpoints return correct responses verified via curl or Postman.
+- `GET /api/recipes` returns 12 recipes with pagination metadata.
+- `GET /api/recipes/1` returns a recipe with its steps and tags populated.
+
+---
+
+## 4. Phase 2 - Frontend Core (Days 3-5)
+
+**Goal:** React SPA with all pages and full API integration.
+
+### Deliverables
+
+| Deliverable | Details |
+|-------------|---------|
+| Vite project setup | React 19, TypeScript strict mode, React Router v7, TanStack Query v5 |
+| API client module | Typed fetch wrappers in `src/api/` - one function per endpoint, shared error handling |
+| Layout component | Top navigation bar with links to Home, Recipes, Favorites; responsive container |
+| HomePage | Featured recipes section (first 3 by seed order), quick stats (total recipes, total tags) |
+| RecipeListPage | Paginated grid of recipe cards, 9 per page, page navigation controls |
+| RecipeDetailPage | Full recipe display with ingredients, steps (ordered), tags as badges, edit button |
+| RecipeEditPage | Form for create and edit modes, tag multi-select, dynamic step list (add/remove/reorder) |
+| FavoritesPage | Shell page displaying "Coming Soon" message with a placeholder heart icon |
+| Reusable UI components | `Card`, `Button`, `Badge`, `Spinner`, `EmptyState` - plain CSS modules, no component library |
+| Vite proxy config | Proxy `/api` requests to `https://localhost:5062` during development |
+
+### Key decisions
+
+- No UI component library. Hand-written CSS keeps the bundle small and gives participants code they can read and modify without learning a framework.
+- TanStack Query handles all server state. No Redux, no Zustand, no Context-based state management.
+- TypeScript interfaces generated by hand (not auto-generated from OpenAPI) to keep the project dependency-light.
+
+### Exit criteria
+
+- `npm run dev` starts the client on `http://localhost:5173`.
+- All pages render correctly with data from the running API.
+- Recipe browsing works: home page loads featured recipes, list page paginates, detail page shows steps and tags.
+- Recipe creation works: fill form, submit, new recipe appears in list.
+- Recipe editing works: modify fields, save, changes persist.
+- Navigation between all pages works without full-page reloads.
+- FavoritesPage shows the "Coming Soon" message without errors.
+
+---
+
+## 5. Phase 3 - Secondary Features and Bugs (Days 6-8)
+
+**Goal:** Implement Cook Mode, Search, and Share features WITH the three planted bugs.
+
+### Deliverables
+
+**Backend endpoints with planted bugs:**
+
+| File | Feature | Bug |
+|------|---------|-----|
+| `CookModeEndpoints.cs` | `GET /api/recipes/{id}/steps/{stepNumber}` | Bug 1: Off-by-one error. Endpoint uses zero-based index to look up steps but the step numbers in the URL are one-based. Step 1 returns step 2 data, last step returns 404. |
+| `SearchEndpoints.cs` | `GET /api/recipes/search?q={query}` | Bug 2: Case-sensitive `Contains()` and splits multi-word queries with AND logic but applies each word to title only, not description. "chicken pasta" matches nothing because no single title contains both words in the right case. |
+| `ShareEndpoints.cs` | `POST /api/recipes/{id}/share` and `GET /api/shared/{token}` | Bug 3: POST generates a token and returns it in the response, but the `Token` property is not set before `SaveChangesAsync()`, so the row is saved with `Token = null`. GET queries by token value and always returns 404. |
+
+**Other backend work:**
+
+| Deliverable | Details |
+|-------------|---------|
+| `FavoriteEndpoints.cs` | `POST /api/favorites/{recipeId}` and `GET /api/favorites` - both return `501 Not Implemented`. These are stubs for Challenge 02. |
+
+**Frontend components:**
+
+| Component | Details |
+|-----------|---------|
+| CookModePage | Step-by-step display with timer, next/previous navigation, progress bar. Uses `useCookMode` custom hook. The hook calls the bugged step endpoint, so step 1 shows step 2 content. |
+| SearchBar | Text input in the navigation bar, triggers search on enter or button click |
+| FilterPanel | Tag-based filtering on RecipeListPage (client-side filter on already-loaded data) |
+| SharedRecipePage | Renders a read-only recipe view at `/shared/{token}` - always shows an error due to Bug 3 |
+| ShareButton | Button on RecipeDetailPage that calls the share endpoint and displays the generated link |
+
+### Bug verification checklist
+
+This checklist must be completed by the Technical Reviewer, not the developer who planted the bugs.
+
+- [ ] Bug 1: Navigate to Cook Mode for any recipe. First step shown is actually step 2. Clicking "Next" on the second-to-last step shows a 404 or empty state instead of the final step.
+- [ ] Bug 2: Search "chicken pasta" returns 0 results. Search "PIZZA" returns 0 results. Search "Pizza" (exact title case match, single word) returns results.
+- [ ] Bug 3: Click Share on any recipe. Link is generated and displayed. Open the share link in a new tab. Page shows 404 or "Recipe not found."
+- [ ] Core CRUD still works: recipe list loads, recipe detail loads, create and edit save correctly.
+- [ ] App starts without errors. No console errors on pages that do not exercise the bugged features.
+- [ ] Bugs survive `dotnet format` - run the formatter and confirm bug behavior is unchanged.
+- [ ] Bugs survive ESLint - run the linter on the client and confirm no auto-fixes alter the bugged hook.
+
+### Exit criteria
+
+- All three features (Cook Mode, Search, Share) are present in the UI and reachable via navigation.
+- All three bugs are verified per the checklist above.
+- Favorites page still shows "Coming Soon" (stubs return 501, frontend handles gracefully).
+- No regressions in recipe CRUD or browsing.
+
+---
+
+## 6. Phase 4 - Polish and Packaging (Days 9-10.5)
+
+**Goal:** Dev container, testing infrastructure, documentation, hackathon readiness.
+
+### Deliverables
+
+**Dev environment:**
+
+| Deliverable | Details |
+|-------------|---------|
+| `.devcontainer/devcontainer.json` | .NET 10 SDK, Node.js 20 LTS, recommended VS Code extensions (C# Dev Kit, ESLint, Copilot) |
+| `.devcontainer/Dockerfile` | Based on `mcr.microsoft.com/devcontainers/dotnet:10.0` with Node.js feature added |
+| Codespaces prebuild config | `postCreateCommand` runs `dotnet restore` and `npm install` so the environment is ready on open |
+
+**Testing infrastructure:**
+
+| Deliverable | Details |
+|-------------|---------|
+| `api.Tests/` | xUnit test project skeleton with project reference to the API. No test files — students create all tests in Challenge 04. |
+| `client/vitest.config.ts` | Vitest configured with jsdom environment. No test files — students create all tests in Challenge 04. |
+
+**Hackathon content polish:**
+
+| Deliverable | Details |
+|-------------|---------|
+| Formatting inconsistencies | 2-3 minor issues for Challenge 03: one file with mixed indentation (tabs vs spaces), one component missing a trailing newline, one CSS file with inconsistent quote style. Subtle enough to be realistic. |
+| README.md | Getting started guide: prerequisites, clone, open in Codespace, run API, run client, verify it works |
+| Challenge file updates | Review all challenge markdown files against the actual app. Update Challenge 05 bug descriptions to match the exact symptoms. |
+| Coach guide updates | Walkthrough for each bug fix, expected test additions, common participant mistakes |
+
+**Final verification:**
+
+| Check | Method |
+|-------|--------|
+| Fresh Codespace build | Delete any cached images, create new Codespace from the repo, time the setup |
+| Build time | `dotnet build` and `npm install && npm run build` both complete without warnings or errors |
+| All challenges completable | Walk through each challenge file and confirm the instructions match the code |
+| Coach guide accuracy | Follow the coach guide solutions and confirm they resolve the bugs and pass tests |
+
+### Exit criteria
+
+- A fresh Codespace clone builds and runs in under 5 minutes (including container build).
+- `dotnet run` starts the API and seeds the database without manual steps.
+- `npm run dev` starts the client and proxies to the API without manual steps.
+- All seven challenges are completable by following the instructions.
+- Coach guide matches actual app behavior, bug symptoms, and fix approaches.
+- README accurately describes the setup process.
+
+---
+
+## 7. Risk Register
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|-----------|------------|
+| .NET 10 SDK preview instability | High | Low | Pin specific SDK version in `global.json`. Test with the exact version before starting. |
+| Planted bugs accidentally fixed by linter or formatter | Medium | Medium | Verify bugs survive `dotnet format` and `npm run lint -- --fix`. Add this to Phase 3 exit criteria. |
+| Codespaces dev container build failure | High | Low | Test on multiple machines. Pin Docker base image tag (not `latest`). Include offline fallback instructions in README. |
+| Squad CLI breaking changes | Medium | Medium | Pin Squad CLI version in `devcontainer.json` postCreateCommand. Document the tested version. |
+| React 19 breaking changes between RC and stable | Low | Low | Pin exact React version in `package.json`. Use `--save-exact` on install. |
+| Participants discover bugs before Challenge 05 | Low | Medium | Bugs live in features (Cook Mode, Search, Share) that early challenges do not exercise. If noticed early, it is acceptable - participants just get a head start. |
+| Seed data too simple for realistic demos | Low | Medium | Include 12 recipes across 4+ cuisines with varying step counts (3-8 steps each). Review during Phase 1 exit criteria. |
+
+---
+
+## 8. Dependencies
+
+```
+Phase 1 (Foundation) -----> Phase 2 (Frontend Core)
+         |
+         +----------------> Phase 3 (Features + Bugs)
+
+Phase 2 + Phase 3 --------> Phase 4 (Polish)
+```
+
+Phases 2 and 3 can run in partial parallel when staffed by two people:
+
+- Phase 2 (frontend) can begin as soon as Phase 1 CRUD endpoints are stable.
+- Phase 3 backend work (Cook Mode, Search, Share endpoints) can proceed independently of frontend.
+- Phase 3 frontend work (Cook Mode page, Search components, Share button) depends on both Phase 2 layout/routing and Phase 3 backend endpoints.
+
+If a single developer handles everything sequentially, the critical path is: Phase 1 (2 days) -> Phase 2 (3 days) -> Phase 3 (3 days) -> Phase 4 (2.5 days) = 10.5 days.
+
+With two people, Phases 2 and 3 can overlap by approximately 1.5 days, compressing the timeline to roughly 9 days.
+
+---
+
+## 9. Engagement Plan
+
+| Milestone | Activity | Participants | Timing |
+|-----------|----------|-------------|--------|
+| Phase 1 complete | Internal demo: API walkthrough. Run through all endpoints, review seed data, confirm database schema matches SRD. | Developer + Reviewer | Day 2 |
+| Phase 2 complete | Frontend walkthrough. Click through every page, test create/edit flow, flag UI issues. | Developer + Reviewer | Day 5 |
+| Phase 3 complete | Bug verification session. Reviewer independently runs the bug checklist. Content author reviews challenge file alignment. | Developer + Reviewer + Content Author | Day 8 |
+| Phase 4 mid-point | Fresh Codespace test. Someone who has not touched the repo clones it and follows the README. | Reviewer or Content Author | Day 9.5 |
+| Phase 4 complete | Dry-run hackathon. 1-2 pilot participants attempt all seven challenges in a time-boxed session (3 hours). Collect friction points. | Full team + 1-2 pilot participants | Day 10.5 |
+| Post dry-run | Fix session. Address issues found during the dry run. Typically 0.5-1 day of minor fixes. | Developer | Day 11-11.5 |
+| Event day | Hackathon delivery. Coaches facilitate, participants work through challenges. | Coaches + Participants | Scheduled event |
+
+### Dry-run protocol
+
+The dry-run hackathon is the most important quality gate. Structure it as follows:
+
+1. Pilot participants receive only the README and challenge files - no verbal guidance.
+2. They work in a fresh Codespace with no pre-existing state.
+3. A team member observes (screen share or shoulder) but does not help unless the participant is blocked for more than 10 minutes.
+4. After the session, collect feedback on: setup friction, unclear instructions, challenge difficulty, and any unintended bugs found.
+5. Prioritize fixes: blocking issues are mandatory, unclear wording is high priority, nice-to-haves are deferred.
+
+---
+
+## 10. Definition of Done
+
+The RecipeHub starter app is ready for hackathon use when all of the following are true:
+
+- [ ] Fresh Codespace builds and runs in under 5 minutes
+- [ ] 12 recipes with seed data load on first `dotnet run`
+- [ ] Recipe CRUD works end-to-end (list, detail, create, edit, delete)
+- [ ] Cook Mode, Search, and Share features are present in the UI
+- [ ] All 3 planted bugs reproduce reliably per the verification checklist
+- [ ] No unintended bugs in core CRUD or navigation
+- [ ] Favorites endpoint stubs return 501
+- [ ] xUnit test project skeleton and Vitest configuration present, but no test files — students create all tests in Challenge 04
+- [ ] 2-3 minor formatting inconsistencies exist for Challenge 03
+- [ ] README accurately describes setup steps
+- [ ] All 7 challenge files match the actual app
+- [ ] Coach guide solutions are verified against the code
+- [ ] At least one dry-run hackathon completed with external participants

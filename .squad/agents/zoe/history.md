@@ -18,4 +18,16 @@
 
 ## Learnings
 
+### 2026-04-20: Test Strategy for RecipeHub v1
+
+**Database choice:** SQLite in-memory with shared open connection beats EF Core InMemory provider — foreign key constraints and transaction behavior match production SQLite file database. In-memory provider silently ignores constraint violations, creating false negatives in tests.
+
+**Planted bug test pattern:** SKIP tests representing expected-after-fix behavior, with bug ID in skip reason. When bug is fixed, un-skip the test — the test IS the acceptance criteria. Avoids duplication of "broken behavior test" vs "fixed behavior test."
+
+**Test pyramid for data-driven apps:** Heavy integration (API + DB), moderate component (stateful UI), minimal unit (little extractable logic in Minimal API). ~80 tests targeting 70% coverage is realistic for v1.
+
+**Planted bugs as acceptance criteria:** Each bug gets at least two skipped tests (backend + frontend) describing correct behavior. SRD §8 bug specs are detailed enough to write assertions before implementation exists.
+
+**Case sensitivity in SQLite:** `string.Contains()` → `instr()` (case-sensitive). `EF.Functions.Like()` → `LIKE` (case-insensitive for ASCII). Critical for search bug diagnosis.
+
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
