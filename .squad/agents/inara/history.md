@@ -70,6 +70,8 @@ Shipped `src/api/{types,client,index}.ts` in `src/RecipeHub.Web`. Native fetch, 
 
 Shipped 5 pages (Home/List/Detail/Edit/Favorites) + 6 TanStack Query hooks + react-router-dom v7.14.1 wiring. Dual-mode Edit page (create via /recipes/new, edit via /recipes/:id/edit) with native useState form, dynamic step reorder, tag checkbox multi-select. Trivial title filter on list page marked TODO for Item 15's SearchBar. Cook Mode button links to /recipes/:id/cook (route owned by Item 13). No apiClient changes — Item 8's 6 endpoints cover full CRUD. CSS Modules throughout. `npm run build` (118 modules, 1.06s) + `npm run lint` both clean.
 
+### 2026-04-20 — HTTP 431 fix: raised Node max-http-header-size to 32KB in Web dev script (package.json "dev" → `node --max-http-header-size=32768 node_modules/vite/bin/vite.js`). Root cause: Aspire-injected env/headers blew past Node's 8KB default. vite.config.ts already correct (host:true, PORT honored) — no change. Build + lint clean.
+
 ### 2026-04-20 — Items 13+15+17: Cook Mode, Search, Share UIs
 
 Shipped useCookMode/useTimer/CookModePage (route /recipes/:id/cook), useSearch + SearchBar (300ms internal debounce) + FilterPanel wired into RecipeListPage, ShareButton on RecipeDetailPage, SharedRecipePage (route /shared/:token) with bare layout via useLocation check in App.tsx. apiClient +4 methods (getCookStep, searchRecipes, shareRecipe, getSharedRecipe), +2 types (CookModeDto, ShareDto). BUG 1 frontend planted at useCookMode.ts L19 (useState(1)) — no comment. Bugs 2/3 untouched; share page correctly lands on 404 branch end-to-end as expected. No new deps, vanilla CSS modules. npm run build (133 modules, 865ms) + npm run lint both clean.
